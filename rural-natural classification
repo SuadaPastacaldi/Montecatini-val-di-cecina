@@ -1,0 +1,98 @@
+library(terra)
+library(sf)
+library(imageRy)
+
+
+#import shp file comune di montecatini val di cecina
+dev.off()
+
+setwd("C:/Users/suada/OneDrive - University of Pisa/Desktop/Limiti01012025_g")
+comuni<-st_read("C:/Users/suada/OneDrive - University of Pisa/Desktop/Limiti01012025_g/Com01012025_g/Com01012025_g_WGS84.shp")
+str(comuni) 
+View(comuni)
+
+plot(comuni)
+plot(comuni[1])
+
+#montecatini
+
+names(comuni)
+unique(comuni$COMUNE)
+mvc<- comuni[comuni$COMUNE == "Montecatini Val di Cecina", ]
+View(mvc)
+mvc.shape<-plot(mvc[13])
+plot(mvc.shape)
+view
+
+# solo  geometria
+mvc.geom<- st_geometry(mvc)          
+mvc.geom.sf <- st_sf(geometry = mvc.geom)  
+
+#export file 
+
+st_write(mvc.geom.sf, "Montecatini_Val_di_Cecina2.shp")
+st_write(mvc.geom.sf, "Montecatini2.geojson", driver = "GeoJSON", delete_dsn = TRUE)
+
+getwd()
+dev.off()
+
+#shape area
+area.m<-155088318
+area.km<-area.m/1e6
+
+#########################################################################
+#got data from    https://browser.dataspace.copernicus.eu/
+
+### import tiff
+setwd("C:/Users/suada/OneDrive - University of Pisa/Desktop/immagini satellitari montecatini")
+NDVI2017<-rast("C:/Users/suada/OneDrive - University of Pisa/Desktop/immagini satellitari montecatini/2017-08-02-00_00_2017-08-02-23_59_Sentinel-2_L2A_NDVI.tiff")
+plot(NDVI2017)
+
+NDVI2025<-rast("C:/Users/suada/OneDrive - University of Pisa/Desktop/immagini satellitari montecatini/2025-08-12-00_00_2025-08-12-23_59_Sentinel-2_L2A_NDVI.tiff")
+plot(NDVI2025)
+
+par(mfrow=c(1,2))
+plot(NDVI2017, main="2017")
+plot(NDVI2025,  main="2025")
+dev.off()
+
+reclass_matrix <- matrix(c(Inf,0.2, -Inf, 0.2 ))
+
+class.2017<-classify(NDVI2017,reclass_matrix)
+plot(class.2017[[1]])
+
+class.2025<-classify(NDVI2025,reclass_matrix)
+plot(class.2025[[1]])
+
+par(mfrow=c(1,2))
+plot(class.2025[[1]], main="2017")
+plot(class.2017[[1]],  main="2025")
+
+
+dev.off()
+
+############################## QUANTIFY CHANGE ################################
+
+
+f2017<-freq(class.2017[[1]])
+f2025<-freq(class.2025[[1]])
+f2017
+f2025
+
+#compute percentage of pixel class
+n2017<-ncell(class.2017[[1]])
+n2025<-ncell(class.2025[[1]])
+n2017
+n2025
+
+
+p2017<-f2017[["count"]]/n2017*100
+p2017
+#29.61472 70.38528
+
+p2025<-f2025[["count"]]/n2025*100
+p2025
+#31.56335 68.43665
+#diminuzione dell area coltivata di un punto percentuale
+
+
