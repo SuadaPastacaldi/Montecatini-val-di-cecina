@@ -96,3 +96,7 @@ p2025
 #diminuzione dell area coltivata di un punto percentuale
 
 
+##############################################################################
+#import true color 
+truecol<-rast("C:/Users/suada/OneDrive - University of Pisa/Desktop/immagini satellitari montecatini/2025-08-12-00_00_2025-08-12-23_59_Sentinel-2_L2A_True_color.tiff")
+plot(truecol)
