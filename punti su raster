@@ -1,0 +1,36 @@
+##############################################################################
+#import true color 
+truecol<-rast("C:/Users/suada/OneDrive - University of Pisa/Desktop/immagini satellitari montecatini/2025-08-12-00_00_2025-08-12-23_59_Sentinel-2_L2A_True_color.tiff")
+plot(truecol)
+
+
+########################################################################
+#provo a inserire un punto georeferenziato 
+
+
+# 2. Creo il data frame con le coordinate del punto
+coords <- data.frame(
+  lon = 10.703131,
+  lat = 43.345617)
+
+# 3. Converto in oggetto sf con stesso CRS del raster
+punto <- st_as_sf(coords, coords = c("lon", "lat"), crs = crs(truecol))
+
+
+
+# 4. Aggiungo il punto al plot
+
+dev.off()
+plot(truecol,colNA = "white")
+plot(punto, col = "red", pch = 19, cex = 1.5, add = TRUE)
+
+
+#aggiungo anche stazione climatica  43.387000, 10.743000
+coords1<- data.frame(
+  lon = 10.743000,
+  lat = 43.387000)
+
+punto1<- st_as_sf(coords1, coords = c("lon", "lat"), crs = crs(truecol))
+
+
+plot(punto1, col = "white", pch = 8, cex = 1.5, add = TRUE)
