@@ -1,0 +1,61 @@
+library(terra)
+dev.off()
+
+ndvi2024<-rast("C:/Users/suada/OneDrive - University of Pisa/Desktop/immagini satellitari montecatini/2025-08-12-00_00_2025-08-12-23_59_Sentinel-2_L2A_NDVI.tiff")
+tc2024<-rast("C:/Users/suada/OneDrive - University of Pisa/Desktop/immagini satellitari montecatini/2025-08-12-00_00_2025-08-12-23_59_Sentinel-2_L2A_True_color.tiff")
+
+plot(ndvi2024)
+plot(tc2024)
+tc2024
+
+
+reclass_matrix <- matrix(c(Inf,0.2, -Inf, 0.2 ))
+
+
+class.2024<-classify(ndvi2024,reclass_matrix)
+plot(class.2024[[1]])
+
+imclass.2024<-im.classify(ndvi2024, num_clusters = 2)
+plot(imclass.2024)
+
+
+
+par(mfrow=c(1,2))
+
+
+plot(ndvi2024)
+plot(class.2024[[1]])
+
+dev.off()
+
+
+################################# quantify
+
+#quantify change
+#function calculating the frequency of a certain class
+#freq(image)
+
+f2024<-freq(class.2024[[1]])
+f2024
+
+#  layer      value  count
+#1     1  (inf–0.2] 310899
+#2     1 (-inf–0.2] 674101
+
+
+#compute percentage of pixel class
+n2024<-ncell(class.2024[[1]])
+n2024
+#985000
+
+#percentage
+#frequency/tot pixels * 100
+
+highndvi<- 310899/n2024 * 100
+highndvi
+#31.56335
+
+lowndvi<- 674101/n2024 * 100
+lowndvi
+#68.43665
+
