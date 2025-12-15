@@ -1,0 +1,73 @@
+#Exercise n. 1 
+
+#How to build a Network graph in R
+
+install.packages("bipartite") # R package for network analysis
+
+library(RColorBrewer)
+library(bipartite) # uploading package to R
+help("bipartite")
+help("plotweb")
+
+# uploading matrix. VERY IMPORTANT: SET row.names=1
+matrix<- read.csv("C:/Users/suada/OneDrive - University of Pisa/Desktop/Network analysis/plantspecies_funcgroup_meadow.csv", sep=";")
+
+matrix <- na.omit(matrix) 
+
+#per sistemare prima colonna 
+rownames(matrix) <- matrix$Pollinator
+rownames(matrix)
+
+matrix$Pollinator <- NULL
+#matrix$Pollinator <- as.numeric(factor(rownames(matrix)))
+
+
+#se non inserisci rownames=1 ci vuole matrix$X= NULL
+View(matrix) # show the matrix
+
+
+plotweb(matrix, text.rot=90, labsize= 1, ybig=1.5) # network graph
+                       #text.rot=90 per angolatura etichette
+
+##colori 
+plant_colors<- "green4"
+insect_colors <- colorRampPalette(brewer.pal(8, "Set2"))(nrow(matrix))
+interaction_colors<- "gray90"
+
+
+
+getwd() 
+
+png("plantspecies_funcgroup.meadow.png", width = 1400, height = 900, res = 150)
+par(mar = c(12, 4, 4, 2))
+plotweb(matrix,
+        text.rot = 90,
+        labsize = 0.9,
+        ybig = 1.3,
+        col.high = plant_colors,
+        col.low = insect_colors,
+        col.interaction = interaction_colors)
+dev.off()
+
+
+
+
+
+############### 
+
+
+
+matrix=as.matrix(matrix) # Convert the R object into a matrix
+
+networklevel(matrix)# Compute all network-level indices
+
+#per averne solo alcuni di indici esplicitarli 
+networklevel.matrix <- networklevel(matrix, index = c("H2", "weighted connectance", "linkage density")) 
+networklevel.matrix
+
+
+
+# Organize indices into columns. t()
+indici_networklevel_tabella <- data.frame(Matrix = "Meadow", t(networklevel.matrix), check.names = FALSE) 
+
+View(indici_networklevel_tabella )
