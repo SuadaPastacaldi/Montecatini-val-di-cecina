@@ -1,6 +1,4 @@
-#Exercise n. 1 
-
-#How to build a Network graph in R
+####### network graph
 
 install.packages("bipartite") # R package for network analysis
 
@@ -54,3 +52,22 @@ dev.off()
 
 
 ############### 
+
+#Calculate network index at different level
+
+
+matrix=as.matrix(matrix) # Convert the R object into a matrix
+
+networklevel(matrix)# Compute all network-level indices
+
+#per averne solo alcuni di indici esplicitarli 
+networklevel.matrix <- networklevel(matrix, index = c("H2", "weighted connectance", "linkage density")) 
+networklevel.matrix
+
+
+
+# Organize indices into columns. t()
+indici_networklevel_tabella <- data.frame(Matrix = "Whole area", t(networklevel.matrix), check.names = FALSE) 
+
+View(indici_networklevel_tabella )
+
